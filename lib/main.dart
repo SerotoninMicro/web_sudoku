@@ -81,7 +81,7 @@ class _SudokuGameState extends State<SudokuGame> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                child: SudokuBoard(board: _sudokuBoard),
+                child: SudokuBoard(board: _sudokuBoard, onCellTap: _editCell),
               ),
               if (isCompleted && isValid)
                 const Padding(
@@ -126,12 +126,19 @@ class _SudokuGameState extends State<SudokuGame> {
       ),
     );
   }
+
+  void _editCell(int rowIndex, int colIndex, int newValue) {
+    setState(() {
+      _sudokuBoard[rowIndex][colIndex] = newValue;
+    });
+  }
 }
 
 class SudokuBoard extends StatefulWidget {
   final List<List<int>> board;
+  final Function(int, int, int) onCellTap;
 
-  const SudokuBoard({super.key, required this.board});
+  const SudokuBoard({super.key, required this.board, required this.onCellTap});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -139,55 +146,6 @@ class SudokuBoard extends StatefulWidget {
 }
 
 class _SudokuBoardState extends State<SudokuBoard> {
-  late List<List<int>> _currentBoard;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentBoard = List.generate(9, (_) => List<int>.filled(9, 0));
-    for (var i = 0; i < 9; i++) {
-      for (var j = 0; j < 9; j++) {
-        _currentBoard[i][j] = widget.board[i][j];
-      }
-    }
-  }
-
-  Future<void> _editCell(
-      BuildContext context, int rowIndex, int colIndex) async {
-    final int? newValue = await showDialog<int>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Edit Cell'),
-          content: TextField(
-            keyboardType: TextInputType.number,
-            textAlign: TextAlign.center,
-            maxLength: 1,
-            onChanged: (String value) {
-              setState(() {
-                _currentBoard[rowIndex][colIndex] = int.tryParse(value) ?? 0;
-              });
-            },
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pop<int>(_currentBoard[rowIndex][colIndex]);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-    if (newValue != null) {
-      setState(() {
-        _currentBoard[rowIndex][colIndex] = newValue;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -201,7 +159,9 @@ class _SudokuBoardState extends State<SudokuBoard> {
             children: List.generate(9, (colIndex) {
               return InkWell(
                 onTap: () {
-                  _editCell(context, rowIndex, colIndex);
+                  if (widget.board[rowIndex][colIndex] == 0) {
+                    widget.onCellTap(rowIndex, colIndex, 1);
+                  }
                 },
                 child: Container(
                   width: 30,
@@ -211,10 +171,15 @@ class _SudokuBoardState extends State<SudokuBoard> {
                   ),
                   child: Center(
                     child: Text(
-                      _currentBoard[rowIndex][colIndex] == 0
+                      widget.board[rowIndex][colIndex] == 0
                           ? ''
-                          : _currentBoard[rowIndex][colIndex].toString(),
-                      style: const TextStyle(fontSize: 20, color: Colors.white),
+                          : widget.board[rowIndex][colIndex].toString(),
+                      style: GoogleFonts.vt323(
+                        textStyle: const TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            letterSpacing: .5),
+                      ),
                     ),
                   ),
                 ),
