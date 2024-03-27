@@ -13,59 +13,57 @@ class SudokuMath {
   static void _removeNumbers(List<List<int>> board, Random random) {
     const removeCount = 40; // Adjust this number for difficulty
     for (var i = 0; i < removeCount; i++) {
-      var x = random.nextInt(9);
-      var y = random.nextInt(9);
-      while (board[x][y] == 0) {
+      int x, y;
+      do {
         x = random.nextInt(9);
         y = random.nextInt(9);
-      }
+      } while (board[x][y] == 0);
       board[x][y] = 0;
     }
   }
 
   static bool _solveSudoku(List<List<int>> board, Random random) {
-    final int row = _getEmptyCellRow(board);
-    final int col = _getEmptyCellCol(board, row);
+    final List<int> emptyCell = _getEmptyCell(board);
+    final int row = emptyCell[0];
+    final int col = emptyCell[1];
+
     if (row == -1) {
-      return true;
+      return true; // Puzzle solved
     }
-    final nums = List.generate(9, (index) => index + 1)..shuffle(random);
+
+    final List<int> nums = _shuffleNumbers();
     for (final num in nums) {
       if (_isValid(board, row, col, num)) {
         board[row][col] = num;
         if (_solveSudoku(board, random)) {
           return true;
         }
-        board[row][col] = 0;
+        board[row][col] = 0; // Backtrack
       }
     }
-    return false;
+    return false; // No solution found
+  }
+
+  static List<int> _getEmptyCell(List<List<int>> board) {
+    for (var i = 0; i < 9; i++) {
+      for (var j = 0; j < 9; j++) {
+        if (board[i][j] == 0) {
+          return [i, j]; // Return row and col of empty cell
+        }
+      }
+    }
+    return [-1, -1]; // Return [-1, -1] if no empty cell found
+  }
+
+  static List<int> _shuffleNumbers() {
+    final List<int> nums = List.generate(9, (index) => index + 1);
+    nums.shuffle();
+    return nums;
   }
 
   static bool solveSudoku(List<List<int>> board) {
     final Random random = Random();
     return _solveSudoku(board, random);
-  }
-
-  static int _getEmptyCellRow(List<List<int>> board) {
-    for (var i = 0; i < 9; i++) {
-      for (var j = 0; j < 9; j++) {
-        if (board[i][j] == 0) {
-          return i;
-        }
-      }
-    }
-    return -1; // Return -1 if no empty cell found
-  }
-
-  static int _getEmptyCellCol(List<List<int>> board, int row) {
-    if (row == -1) return -1; // If no empty cell in row, return -1
-    for (var j = 0; j < 9; j++) {
-      if (board[row][j] == 0) {
-        return j;
-      }
-    }
-    return -1; // Return -1 if no empty cell found in the given row
   }
 
   static bool _isValid(List<List<int>> board, int row, int col, int num) {

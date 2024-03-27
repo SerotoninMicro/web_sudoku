@@ -26,8 +26,23 @@ class _SudokuGameState extends State<SudokuGame> {
 
   void _refreshSudoku() {
     setState(() {
-      _sudokuBoard = SudokuMath.generateSudokuBoard();
+      List<List<int>> newBoard;
+      do {
+        newBoard = SudokuMath.generateSudokuBoard();
+      } while (_areBoardsEqual(newBoard, _sudokuBoard));
+      _sudokuBoard = newBoard;
     });
+  }
+
+  bool _areBoardsEqual(List<List<int>> board1, List<List<int>> board2) {
+    for (var i = 0; i < 9; i++) {
+      for (var j = 0; j < 9; j++) {
+        if (board1[i][j] != board2[i][j]) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   void _solveSudoku() {
