@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'sudokuMath.dart';
@@ -7,9 +8,10 @@ void main() {
 }
 
 class SudokuGame extends StatefulWidget {
-  const SudokuGame({Key? key}) : super(key: key);
+  const SudokuGame({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SudokuGameState createState() => _SudokuGameState();
 }
 
@@ -31,14 +33,13 @@ class _SudokuGameState extends State<SudokuGame> {
   void _solveSudoku() {
     setState(() {
       if (SudokuMath.solveSudoku(_sudokuBoard)) {
-        // Sudoku solved successfully, update UI
-        // This is optional, but you can add a delay to see the solving process
         Future.delayed(const Duration(milliseconds: 500), () {
           setState(() {});
         });
       } else {
-        // No solution found, show an error message if needed
-        print("No solution found!");
+        if (kDebugMode) {
+          print("No solution found!");
+        }
       }
     });
   }
@@ -55,7 +56,8 @@ class _SudokuGameState extends State<SudokuGame> {
           title: Text(
             'Welcome to Sudoku Game',
             style: GoogleFonts.vt323(
-              textStyle: TextStyle(color: Colors.white, letterSpacing: .5),
+              textStyle:
+                  const TextStyle(color: Colors.white, letterSpacing: .5),
             ),
           ),
         ),
@@ -67,8 +69,8 @@ class _SudokuGameState extends State<SudokuGame> {
                 child: SudokuBoard(board: _sudokuBoard),
               ),
               if (isCompleted && isValid)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: Text(
                     'You won the Sudoku!',
                     style: TextStyle(
@@ -86,7 +88,7 @@ class _SudokuGameState extends State<SudokuGame> {
                   'Refresh',
                   style: GoogleFonts.vt323(
                     textStyle:
-                        TextStyle(color: Colors.white, letterSpacing: .5),
+                        const TextStyle(color: Colors.white, letterSpacing: .5),
                   ),
                 ),
               ),
@@ -99,7 +101,7 @@ class _SudokuGameState extends State<SudokuGame> {
                   'Solve',
                   style: GoogleFonts.vt323(
                     textStyle:
-                        TextStyle(color: Colors.white, letterSpacing: .5),
+                        const TextStyle(color: Colors.white, letterSpacing: .5),
                   ),
                 ),
               ),
@@ -114,9 +116,10 @@ class _SudokuGameState extends State<SudokuGame> {
 class SudokuBoard extends StatefulWidget {
   final List<List<int>> board;
 
-  const SudokuBoard({Key? key, required this.board}) : super(key: key);
+  const SudokuBoard({super.key, required this.board});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SudokuBoardState createState() => _SudokuBoardState();
 }
 

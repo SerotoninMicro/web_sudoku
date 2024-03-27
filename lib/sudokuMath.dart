@@ -105,6 +105,6 @@ class SudokuMath {
         }
       }
     }
-    return true; // If all cells satisfy Sudoku rules, return true
+    return true;
   }
 }
