@@ -28,6 +28,21 @@ class _SudokuGameState extends State<SudokuGame> {
     });
   }
 
+  void _solveSudoku() {
+    setState(() {
+      if (SudokuMath.solveSudoku(_sudokuBoard)) {
+        // Sudoku solved successfully, update UI
+        // This is optional, but you can add a delay to see the solving process
+        Future.delayed(const Duration(milliseconds: 500), () {
+          setState(() {});
+        });
+      } else {
+        // No solution found, show an error message if needed
+        print("No solution found!");
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isCompleted = SudokuMath.isSudokuCompleted(_sudokuBoard);
@@ -69,6 +84,19 @@ class _SudokuGameState extends State<SudokuGame> {
                 ),
                 child: Text(
                   'Refresh',
+                  style: GoogleFonts.vt323(
+                    textStyle:
+                        TextStyle(color: Colors.white, letterSpacing: .5),
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: _solveSudoku,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                ),
+                child: Text(
+                  'Solve',
                   style: GoogleFonts.vt323(
                     textStyle:
                         TextStyle(color: Colors.white, letterSpacing: .5),

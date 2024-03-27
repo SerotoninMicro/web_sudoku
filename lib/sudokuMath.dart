@@ -42,6 +42,11 @@ class SudokuMath {
     return false;
   }
 
+  static bool solveSudoku(List<List<int>> board) {
+    final Random random = Random();
+    return _solveSudoku(board, random);
+  }
+
   static int _getEmptyCellRow(List<List<int>> board) {
     for (var i = 0; i < 9; i++) {
       for (var j = 0; j < 9; j++) {
