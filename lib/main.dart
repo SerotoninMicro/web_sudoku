@@ -69,7 +69,7 @@ class _SudokuGameState extends State<SudokuGame> {
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: Text(
-            'Welcome to Sudoku Game',
+            'Welcome to sudoku generator/solver',
             style: GoogleFonts.vt323(
               textStyle:
                   const TextStyle(color: Colors.white, letterSpacing: .5),
